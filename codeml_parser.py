@@ -315,7 +315,7 @@ class PamlPair ():
 
 			return aa_count
 
-		def detect_conserved_aa(alignment, clade):
+		def detect_conserved_aa(alignment, taxa_list):
 			""" Returns a list of sets containing all conserved and mostly conserved codons in the clade group,
 			excluding the selected positions """
 
@@ -334,14 +334,14 @@ class PamlPair ():
 
 						if len(set(column)) == 1:
 
-							clade_codons = [char[i] for sp, char in alignment.items() if sp in clade]
-							other_codons = [char[i] for sp, char in alignment.items() if sp not in clade]
+							clade_codons = [char[i] for sp, char in alignment.items() if sp in taxa_list]
+							other_codons = [char[i] for sp, char in alignment.items() if sp not in taxa_list]
 							all_conserved.append((clade_codons, other_codons))
 
 						if most_common_aa_frequency > 0.70:
 
-							clade_codons = [char[i] for sp, char in alignment.items() if sp in clade]
-							other_codons = [char[i] for sp, char in alignment.items() if sp not in clade]
+							clade_codons = [char[i] for sp, char in alignment.items() if sp in taxa_list]
+							other_codons = [char[i] for sp, char in alignment.items() if sp not in taxa_list]
 							all_mostly_conserved.append((clade_codons, other_codons))
 
 			return all_conserved, all_mostly_conserved
@@ -518,11 +518,9 @@ class PamlPairSet ():
 
 			if pair.fdr_value < 0.05:
 
-				try:
-					pair.mostly_conserved
+				if pair.mostly_conserved:
 					try:
 						most_common = "".join(pair.most_common_aa).strip()
-
 						if most_common == "S":
 							self.S += 1
 						if most_common == "R":
@@ -533,8 +531,6 @@ class PamlPairSet ():
 							print(gene)
 					except:
 						continue
-				except:
-					continue
 
 		print("S: %s, L: %s, R: %s" % (self.S, self.L, self.R))
 
