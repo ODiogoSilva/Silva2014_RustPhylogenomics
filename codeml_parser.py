@@ -974,11 +974,11 @@ class PamlPairSet ():
 										pair.all_clade_unique))
 			else:
 				output_handle.write("%s; %s; %s; %s; %s; %s\n" % (gene,
-																			pair.alternative_lnL,
-																			pair.null_lnL,
-																			pair.pvalue,
-																			"",
-																			gene_length))
+																pair.alternative_lnL,
+																pair.null_lnL,
+																pair.pvalue,
+																"",
+																gene_length))
 
 		output_handle.close()
 
