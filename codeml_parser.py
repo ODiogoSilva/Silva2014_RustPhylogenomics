@@ -142,10 +142,7 @@ class PamlPair ():
 				fall_back_alignment_counter = 1
 				# Getting preliminary gene length. If the alignment is not reduced due to gaps, this gene_length
 				# variable will be used. Otherwise it will be replaced by the gap free alignment length
-				try:
-					gene_length_str = next(file_handle)
-				except:
-					break
+				gene_length_str = next(file_handle)
 
 				if gene_length_str.strip() != "":
 					self.gene_length = gene_length_str.strip().split()[1]
