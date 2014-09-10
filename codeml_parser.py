@@ -83,6 +83,13 @@ class PamlPair ():
 		self.mostly_unique = None
 		self.mostly_diverse = None
 		self.mostly_conserved = None
+		self.conserved_aa_list = None
+		self.unique_aa_list = None
+		self.diverse_aa_list = None
+		self.mostly_conserved_aa_list = None
+		self.most_common_aa = None
+		self.all_conserved = None
+		self.all_mostly_conserved = None
 
 		# Set folder variable
 		self.folder = folder
@@ -395,7 +402,8 @@ class PamlPair ():
 				aa_column = [codon_table[char[position]] for char in self.alignment.values()]
 				#codon_column = [char[position] for char in self.alignment.values()]
 				unique_aa_colum = set(aa_column)
-				self.most_common_aa = [x for x in unique_aa_colum if all([aa_column.count(x) >= aa_column.count(y) for y in unique_aa_colum])]
+				self.most_common_aa = [x for x in unique_aa_colum if all([aa_column.count(x) >= aa_column.count(y)
+																		for y in unique_aa_colum])]
 
 				# Check if there is only one variant
 				if len(unique_aa_colum) == 1:
@@ -473,6 +481,14 @@ class PamlPairSet ():
 		""" The object is initialized with a folder list, each of which contains both the Null and Alternative model
 		folders, which will be used to create the PamlPair object. The PamlPair objects will be stored in a dictionary
 		with their corresponding folder (gene name) as a key """
+
+		# Initialize get_number_aa attributes
+		self.R = None
+		self.L = None
+		self.S = None
+
+		# Initialize get_class_proportion attributes
+		self.class_proportions = None
 
 		self.paml_pairs = OrderedDict()
 
@@ -661,7 +677,7 @@ class PamlPairSet ():
 
 		pvalue_list = [pval for pval in pvalue_dict.values()]
 
-		fdr_bool_list, fdr_pvalue_list, alpha_S, alpha_B = multi_correction.multipletests(pvalue_list, alpha=alpha,
+		fdr_bool_list, fdr_pvalue_list, alpha_s, alpha_b = multi_correction.multipletests(pvalue_list, alpha=alpha,
 																						method="fdr_bh")
 
 		# Updating PamlPairs with corrected p-value
@@ -699,7 +715,7 @@ class PamlPairSet ():
 			site_hist.axis_titles(x="Number of selected sites (FDR < 0.05)", y="Frequency")
 			site_hist.to_json("Site_histogram.json")
 
-	def donut_selected_classes (self):
+	def donut_selected_classes(self):
 		""" Creating of a donut-style plot with the number of positively selected sites for each of the following
 		classes: conserved, unique and diversifying """
 
@@ -869,7 +885,7 @@ class PamlPairSet ():
 		all_conserved_storage = []
 		all_mostly_conserved_storage = []
 
-		for gene,pair in self.paml_pairs.items():
+		for gene, pair in self.paml_pairs.items():
 
 			if pair.conserved_aa is not None and pair.conserved_aa > 0:
 
