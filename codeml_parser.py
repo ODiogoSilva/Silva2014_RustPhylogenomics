@@ -501,6 +501,7 @@ class PamlPairSet ():
 
 			paml_object = PamlPair(folder)
 
+			# This will ensure that only valid pair objects are processed
 			if paml_object.status is True:
 
 				self.paml_pairs[folder] = PamlPair(folder)
@@ -511,7 +512,7 @@ class PamlPairSet ():
 		return [val for val in self.paml_pairs.values()]
 
 	def test_selection_suite(self):
-		""" wrapper for the basic selection test and FDR correction """
+		""" Wrapper for the basic selection test and FDR correction """
 
 		self.test_selection()
 		self.fdr_correction()
@@ -520,13 +521,9 @@ class PamlPairSet ():
 		""" Writes the actual alignments used in codeml, i.e., without gaps, in Fasta format """
 
 		for gene, pair in self.paml_pairs.items():
-
 			output_handle = open(gene + ".fas", "w")
-
 			for sp, seq in pair.alignment.items():
-
 				output_handle.write(">%s\n%s\n" % (sp, "".join(seq)))
-
 			output_handle.close()
 
 	def get_number_aa(self):
@@ -535,9 +532,7 @@ class PamlPairSet ():
 		self.R, self.L, self.S = 0, 0, 0
 
 		for gene, pair in self.paml_pairs.items():
-
 			if pair.fdr_value < 0.05:
-
 				if pair.mostly_conserved:
 					try:
 						most_common = "".join(pair.most_common_aa).strip()
@@ -547,8 +542,6 @@ class PamlPairSet ():
 							self.R += 1
 						if most_common == "L":
 							self.L += 1
-						if most_common == "W":
-							print(gene)
 					except:
 						continue
 
@@ -564,7 +557,7 @@ class PamlPairSet ():
 			pair.likelihood_ratio_test()
 
 	def get_class_proportion(self):
-		""" sets the number of genes that contain a given site class as new attributes """
+		""" Sets the number of genes that contain a given site class as new attributes """
 
 		self.class_proportions = {"conserved": 0, "mostly_conserved": 0, "unique": 0, "diversifying": 0,
 								"mostly_unique": 0, "mostly_diverse": 0}
@@ -573,39 +566,31 @@ class PamlPairSet ():
 		for pair in self.paml_pairs.values():
 
 			if pair.conserved_aa is not None and pair.conserved_aa > 0 and pair.fdr_value < 0.05:
-
 				self.class_proportions["conserved"] += 1
 
 			if pair.mostly_conserved is not None and pair.mostly_conserved > 0 and pair.fdr_value < 0.05:
-
 				self.class_proportions["mostly_conserved"] += 1
 
 			if pair.unique_aa is not None and pair.unique_aa > 0 and pair.fdr_value < 0.05:
-
 				self.class_proportions["unique"] += 1
 
 			if pair.diverse_aa is not None and pair.diverse_aa > 0 and pair.fdr_value < 0.05:
-
 				self.class_proportions["diversifying"] += 1
 
 			if pair.mostly_unique is not None and pair.mostly_unique > 0 and pair.fdr_value < 0.05:
-
 				self.class_proportions["mostly_unique"] += 1
 
 			if pair.mostly_diverse is not None and pair.mostly_diverse > 0 and pair.fdr_value < 0.05:
-
 				self.class_proportions["mostly_diverse"] += 1
 
 			if pair.fdr_value < 0.05:
-
 				selected_genes += 1
 
 		for key, val in self.class_proportions.items():
-
 			self.class_proportions[key] = float(val) / float(selected_genes)
 
 	def get_gene_class_proportions(self):
-		""" For each gene, get the propotion of sites for each site class """
+		""" For each gene, get the proportion of sites for each site class """
 
 		def gene_pie(storage):
 			""" Creates an histogram with the number of genes with the most prevalent class for each site class """
@@ -613,23 +598,17 @@ class PamlPairSet ():
 			conserved_count, mostly_conserved_count, unique_count, diversifying_count = 0, 0, 0, 0
 
 			for gene, vals in storage.items():
-
 				maximum_val = max(vals)
-
 				most_prevalent = [i for i, j in enumerate(vals) if j == maximum_val]
 
 				for pos in most_prevalent:
-
 					if pos == 0:
-
 						conserved_count += 1
 
 					if pos == 1:
-
 						unique_count += 1
 
 					if pos == 2:
-
 						diversifying_count += 1
 
 			pie_data = {"Conserved": conserved_count, "Unique": unique_count, "Diversifying": diversifying_count}
@@ -641,11 +620,8 @@ class PamlPairSet ():
 		gene_storage = OrderedDict()  # Order of the list elements [conserved, mostly conserved, unique, diversifying]
 
 		for gene, pair in self.paml_pairs.items():
-
 			if pair.fdr_value < 0.05:
-
 				if pair.selected_aa:
-
 					number_selected_aa = float(len(pair.selected_aa))
 
 					conserved_proportion = float(pair.conserved_aa) / number_selected_aa
@@ -661,7 +637,6 @@ class PamlPairSet ():
 		output_file.write("Gene; Conserved; Unique; Diversifying\n")
 
 		for gene, vals in gene_storage.items():
-
 			output_file.write("%s; %s; %s; %s\n" % (gene, vals[0], vals[1], vals[2]))
 
 		output_file.close()
@@ -674,9 +649,7 @@ class PamlPairSet ():
 		pvalue_dict = OrderedDict()
 
 		for gene, pair in self.paml_pairs.items():
-
 			if pair. pvalue is not None:
-
 				pvalue_dict[gene] = pair.pvalue
 
 		pvalue_list = [pval for pval in pvalue_dict.values()]
@@ -686,14 +659,12 @@ class PamlPairSet ():
 
 		# Updating PamlPairs with corrected p-value
 		for gene, fdr_val in zip(pvalue_dict, fdr_pvalue_list):
-
 			self.paml_pairs[gene].set_fdr(fdr_val)
 
 	def filter_aa(self, clade, set_aa_columns=None):
 		""" A wrapper that applies the filter_aa method of the PamlPair to every pair """
 
 		for gene, pair in self.paml_pairs.items():
-
 			pair.filter_aa(clade, set_aa_columns=set_aa_columns)
 
 	def site_histogram(self, runmode):
@@ -701,7 +672,6 @@ class PamlPairSet ():
 			all_selected - Histogram of the distribution of selected sites per gene """
 
 		if "all_selected" in runmode:
-
 			# Retrieving a list containing the selected sites for each PamlPair with evidence of selection (fdr < 0.05)
 			selected_site_list = []
 
@@ -727,9 +697,7 @@ class PamlPairSet ():
 																											0, 0, 0, 0
 
 		for gene, pair in self.paml_pairs.items():
-
 			if pair.fdr_value < 0.05:
-
 				selected_aa += len(pair.selected_aa)
 
 				if pair.conserved_aa is not None:
@@ -762,9 +730,6 @@ class PamlPairSet ():
 					("Diverse sites (%s)" % diverse_aa, diverse_aa), ("No annotation (%s)" % no_annotation_sites,
 					no_annotation_sites), ("Mostly unique (%s)" % mostly_unique, mostly_unique), ("Mostly diverse ("
 					"%s)" % mostly_diverse, mostly_diverse)])
-
-		#{"Conserved sites (%s)" % (conserved_aa): conserved_aa, "Unique sites (%s)" % (unique_aa): unique_aa, "Diverse
-		#  sites (%s)" %(diverse_aa):diverse_aa, "No annotation (%s)" % (no_annotation_sites): no_annotation_sites}
 
 		class_chart = vincent.Pie(data_series, inner_radius=150)
 		class_chart.colors(brew="Set2")
