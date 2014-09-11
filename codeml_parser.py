@@ -103,7 +103,7 @@ class PamlPair ():
 		""" Update the pvalue """
 		self.fdr_value = fdr
 
-	def __parse_main_alternative__(self, file_suffix, subfolder="Alternative"):
+	def __parse_main_alternative__(self, file_suffix, subfolder="/Alternative"):
 		""" This function parses the main output file of the alternative model, setting a number of object attributes.
 		By default the output files of the alternative hypothesis are assumed to be inside a folder named
 		"Alternative", but this can be changed using the subfolder argument.
@@ -243,19 +243,22 @@ class PamlPair ():
 
 		file_handle.close()
 
-	def __parse_main_null__(self, file_suffix):
-		""" This function parses the main output file of the null model, setting a number of object attributes. A list
-		of attributes follows:
+	def __parse_main_null__(self, file_suffix, subfolder="/Null"):
+		""" This function parses the main output file of the null model, setting a number of object attributes.
+		By default the output files of the null hypothesis are assumed to be inside a folder named "Null",
+		but this can be changed using the subfolder argument.
+
+		A list of attributes follows:
 		self.null_lnL : (str) The likelihood of the alternative model;
 		"""
 
 		# Assuming that the output files of the null hypothesis are inside a folder named "Null",
 		# this will find the codeml output file based on a specific substring (file_suffix)
-		folder_contents = os.listdir(self.folder + "/Null")
-		file_path = self.folder + "/Null/" + "".join([x for x in folder_contents if file_suffix in x])
+		folder_contents = os.listdir(self.folder + subfolder)
+		file_path = self.folder + subfolder + "".join([x for x in folder_contents if file_suffix in x])
 
 		# If the output file does not exist, set the status for this Pair object to false and return
-		if file_path == self.folder + "/Null/":
+		if file_path == self.folder + subfolder:
 			self.status = False
 			return 1
 
