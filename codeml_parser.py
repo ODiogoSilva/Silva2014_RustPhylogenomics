@@ -62,7 +62,7 @@ class PamlPair ():
 	positive selection by LRT, then several attributes related to positive selection findings will be available """
 
 	def __init__(self, folder):
-		""" To instantiate a PamlPair object, a folder containing the Null and Alternative sub folders """
+		""" To instantiate a PamlPair object, a folder containing the Null and Alternative sub folders is required """
 
 		# Initialize p-value attribute
 		self.pvalue = None
@@ -94,12 +94,13 @@ class PamlPair ():
 		# Set folder variable
 		self.folder = folder
 
+		# The arguments of the following function are the specific substring of the codeml output file and it may be
+		# changed to conform to the output file names. Also, they do not need to be the same.
 		self.__parse_main_alternative__("y_selection")
 		self.__parse_main_null__("y_selection")
 
 	def set_fdr(self, fdr):
 		""" Update the pvalue """
-
 		self.fdr_value = fdr
 
 	def __parse_main_alternative__(self, file_suffix):
