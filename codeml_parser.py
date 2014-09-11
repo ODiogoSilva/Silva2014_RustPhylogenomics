@@ -194,6 +194,7 @@ class PamlPair ():
 			if fall_back_alignment_counter == 1 and line.strip().startswith("Printing out site pattern counts"):
 				fall_back_alignment_counter = 0
 
+			# Getting selected aminoacid position and PP value
 			if counter == 1 and line.strip() != "":
 				aa = line.split()
 				if "*" in aa[-1]:
@@ -211,6 +212,7 @@ class PamlPair ():
 			if line.strip().startswith("Printing out site pattern counts"):
 				alignment_counter = 0
 
+			# Populating alignment attribute
 			if len(line.split("_")) != 1 and alignment_counter == 1:
 
 				fields = line.strip().split()
