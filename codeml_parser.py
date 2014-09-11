@@ -982,7 +982,6 @@ class PamlPairSet ():
 
 		output_handle.close()
 
-
 if __name__ == "__main__":
 
 	def main():
