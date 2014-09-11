@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 #
-# untitled.py
+# orthomcl_toolbox.py
 #  
-#  Copyright 2012 Unknown <diogo@arch>
+#  Copyright 2014 Diogo N. Silva
 #  
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
