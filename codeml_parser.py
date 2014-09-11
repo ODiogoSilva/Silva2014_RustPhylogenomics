@@ -103,9 +103,10 @@ class PamlPair ():
 		""" Update the pvalue """
 		self.fdr_value = fdr
 
-	def __parse_main_alternative__(self, file_suffix):
+	def __parse_main_alternative__(self, file_suffix, subfolder="Alternative"):
 		""" This function parses the main output file of the alternative model, setting a number of object attributes.
-		For this to work, the output files of the alternative hypothesis must be inside a folder name "Alternative"
+		By default the output files of the alternative hypothesis are assumed to be inside a folder named
+		"Alternative", but this can be changed using the subfolder argument.
 
 		A list of attributes follows:
 		- self.gene_length : (int) The length of the gene (gene length is 0 is alignment is non-existent);
@@ -125,11 +126,11 @@ class PamlPair ():
 
 		# Assuming that the output files of the alternative hypothesis are inside a folder named "Alternative",
 		# this will find the codeml output file based on a specific substring (file_suffix)
-		folder_contents = os.listdir(self.folder + "/Alternative")
-		file_path = self.folder + "/Alternative/" + "".join([x for x in folder_contents if file_suffix in x])
+		folder_contents = os.listdir(self.folder + subfolder)
+		file_path = self.folder + subfolder + "".join([x for x in folder_contents if file_suffix in x])
 
 		# If the output file does not exist, set the status for this Pair object to false and return
-		if file_path == self.folder + "/Alternative/":
+		if file_path == self.folder + subfolder:
 			self.status = False
 			return 1
 
