@@ -271,6 +271,7 @@ class PamlPair ():
 		for line in file_handle:
 
 			if line.strip().startswith("lnL"):
+				# Getting the likelihood
 				self.null_lnL = float(line.split(":")[-1].split()[0])
 
 		file_handle.close()
@@ -306,8 +307,9 @@ class PamlPair ():
 	def filter_aa(self, clade, set_aa_columns=None):
 		""" This function returns a number of selected amino acid filters, such as conserved, unique or diversifying
 		amino acids. A clade of species must be provided and the number of unique and diversifying selected amino
-		acids to that clade will be returned. It always returns a tuple. If there are positively selected sites,
-		the tuple has three elements, otherwise it contains only an "NA" string
+		acids to that clade will be returned. If there are positively selected sites, this will set a number of
+		attributes for each site class, otherwise it will return a "NA" string
+
 		The set_aa_columns option can be set to True, so that the function also sets, for each site class, a list
 		containing the entire alignment column. This allows nucleotide/codon trends in the data set but decreases
 		speed."""
@@ -330,7 +332,7 @@ class PamlPair ():
 			return aa_count
 
 		def detect_conserved_aa(alignment, taxa_list):
-			""" Returns a list of sets containing all conserved and mostly conserved codons in the clade group,
+			""" Returns a tuple of sets containing all conserved and mostly conserved codons in the clade group,
 			excluding the selected positions """
 
 			all_conserved = []
@@ -343,15 +345,18 @@ class PamlPair ():
 
 					if i not in selected_positions:
 						column = [codon_table[char[i]] for sp, char in alignment.items()]
-						most_common_aa = [x for x in set(column) if all([column.count(x) >= column.count(y) for y in set(column)])]
+						most_common_aa = [x for x in set(column) if all([column.count(x) >= column.count(y) for y in
+																		set(column)])]
 						most_common_aa_frequency = float(column.count(most_common_aa[0])) / float(len(column))
 
+						# For the strictly conserved
 						if len(set(column)) == 1:
 
 							clade_codons = [char[i] for sp, char in alignment.items() if sp in taxa_list]
 							other_codons = [char[i] for sp, char in alignment.items() if sp not in taxa_list]
 							all_conserved.append((clade_codons, other_codons))
 
+						# For the mostly conserved
 						if most_common_aa_frequency > 0.70:
 
 							clade_codons = [char[i] for sp, char in alignment.items() if sp in taxa_list]
@@ -404,10 +409,10 @@ class PamlPair ():
 				self.diverse_aa_list = []
 				self.mostly_conserved_aa_list = []
 
+			# Starting the iteration over the selected amino acids to sort them into classes
 			for aminoacid in self.selected_aa:
 				position = int(aminoacid[0]) - 1  # The position of the aa in the alignment
 				aa_column = [codon_table[char[position]] for char in self.alignment.values()]
-				#codon_column = [char[position] for char in self.alignment.values()]
 				unique_aa_colum = set(aa_column)
 				self.most_common_aa = [x for x in unique_aa_colum if all([aa_column.count(x) >= aa_column.count(y)
 																		for y in unique_aa_colum])]
@@ -424,11 +429,10 @@ class PamlPair ():
 					continue
 
 				if clade is not None:
-
 					clade_specific_aa = [codon_table[char[position]] for sp, char in self.alignment.items() if sp in clade]
 					other_aa = [codon_table[char[position]] for sp, char in self.alignment.items() if sp not in clade]
 
-					# Counts the number of positively selected sites exclusive and homogeneous to a given clade
+					# Counts the number of positively selected sites exclusive and homogeneous to the given clade
 					if len(set(clade_specific_aa)) == 1 and clade_specific_aa[0] not in other_aa:
 						self.unique_aa += 1
 						continue
@@ -448,7 +452,7 @@ class PamlPair ():
 
 				# Check if the most common aa is also mostly prevalent. This will add to the mostly conserved class,
 				# which relaxes the conserved_aa variant by allowing a small percentage of sites to mutate. Threshold
-				# is at 0.85
+				# is hardcoded at 0.70
 				if self.most_common_aa:
 					frequency_most_common_aa = float(aa_column.count(self.most_common_aa[0])) / float(len(aa_column))
 
@@ -460,21 +464,14 @@ class PamlPair ():
 							other_codon_list = [char[position] for sp, char in self.alignment.items() if sp not in clade]
 							self.mostly_conserved_aa_list.append((clade_codon_list, other_codon_list))
 
-							#clade_aa_list = [codon_table[char[position]] for sp, char in self.alignment.items() if
-							# sp in clade]
-							#other_aa_list = [codon_table[char[position]] for sp, char in self.alignment.items() if
-							# sp not in clade]
-
 						continue
 
 			self.all_clade_unique = detect_unique_aa(self.alignment, clade)
 
+			# This will inspect all alignment columns and will be more time consuming
 			if set_aa_columns is True:
 
 				self.all_conserved, self.all_mostly_conserved = detect_conserved_aa(self.alignment, clade)
-
-			return self.conserved_aa, self.unique_aa, self.diverse_aa, self.mostly_conserved, self.mostly_unique, \
-				self.mostly_diverse
 
 		else:
 			return "NA"
