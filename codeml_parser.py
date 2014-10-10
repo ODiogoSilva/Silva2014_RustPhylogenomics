@@ -595,7 +595,7 @@ class PamlPairSet ():
 		def gene_pie(storage):
 			""" Creates an histogram with the number of genes with the most prevalent class for each site class """
 
-			conserved_count, mostly_conserved_count, unique_count, diversifying_count = 0, 0, 0, 0
+			conserved_count, unique_count, diversifying_count = 0, 0, 0
 
 			for gene, vals in storage.items():
 				maximum_val = max(vals)
@@ -612,6 +612,7 @@ class PamlPairSet ():
 						diversifying_count += 1
 
 			pie_data = {"Conserved": conserved_count, "Unique": unique_count, "Diversifying": diversifying_count}
+			print(pie_data)
 
 			pie_chart = vincent.Pie(pie_data)
 			pie_chart.legend("Site classes")
@@ -626,8 +627,8 @@ class PamlPairSet ():
 
 					conserved_proportion = float(pair.conserved_aa) / number_selected_aa
 					mostly_conserved_proportion = float(pair.mostly_conserved) / number_selected_aa
-					unique_proportion = float(pair.unique_aa) / number_selected_aa
-					diversifying_proportion = float(pair.diverse_aa) / number_selected_aa
+					unique_proportion = (float(pair.unique_aa) + float(pair.mostly_unique)) / number_selected_aa
+					diversifying_proportion = (float(pair.diverse_aa) + float(pair.mostly_diverse)) / number_selected_aa
 
 					gene_storage[gene] = [conserved_proportion + mostly_conserved_proportion, unique_proportion,
 										diversifying_proportion]
