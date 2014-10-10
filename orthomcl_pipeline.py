@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 
-import re
 import os
 import sys
 import codecs
@@ -143,7 +142,7 @@ def adjust_fasta(proteome_dir):
 
 	for proteome in proteome_file_list:
 		if arg.code:
-			code_name = protome.split(".")[0]
+			code_name = proteome.split(".")[0]
 		else:
 			code_temp = proteome.split(Name_separator)
 			code_name = str(code_temp[0][:2] + code_temp[1][:3]).lower()
