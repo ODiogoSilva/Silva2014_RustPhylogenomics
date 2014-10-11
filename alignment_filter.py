@@ -25,7 +25,7 @@ import argparse
 import subprocess
 import sys
 import pickle
-import ElParsito3 as ep
+import Alignment
 import time
 import matplotlib.pyplot as plt
 
@@ -62,13 +62,17 @@ def loading(current_state, size, prefix, width):
 def dataset_creator(infile_list):
 	""" Deals with input files. Creates one instance in case there is only one input alignment, or another instance
 	in case there are multiple input files"""
-	main_instance = ep.SeqUtils()
+
 	if len(infile_list) == 1:
-		input_alignment = "".join(infile_list)
-		alignment_storage = main_instance.read_alignment(input_alignment, "fasta")
+		alignment_object = Alignment.Alignment("".join(infile_list))
+
 	else:
-		alignment_storage = main_instance.read_alignments(infile_list, "fasta")
-	alignment_dic, alignment_order = alignment_storage[0], alignment_storage[1]
+		alignments = Alignment.AlignmentList(infile_list)
+		alignment_object = alignments.concatenate()
+
+	alignment_dic = alignment_object.alignment
+	alignment_order = alignment_object.iter_sequences()
+
 	return alignment_dic, alignment_order
 	
 def data_breaker(storage, alignment_length, break_range=20000):
