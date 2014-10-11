@@ -33,8 +33,6 @@ parser = argparse.ArgumentParser(description="Filters alignment files")
 
 parser.add_argument("-in", dest="infile", nargs="+", required=True, help="Provide the input file name. If multiple "
 					"files are provided, please separated the names with spaces")
-parser.add_argument("-if", dest="InputFormat", default="fasta", choices=["fasta", "nexus", "phylip"], help="Format of "
-					"the input file(s) (default is '%(default)s')")
 parser.add_argument("-g", dest="gap", default="-", help="Symbol for gap (default is '%(default)s')")
 parser.add_argument("-m", dest="missing", default="X", help="Symbol for missing data (default is '%(default)s')")
 parser.add_argument("-tg", dest="threshold_gap", nargs=1, help="Threshold for the maximum proportion of gaps allowed "
@@ -55,7 +53,7 @@ def loading(current_state, size, prefix, width):
 	if percentage == 100:
 		sys.stdout.write("\r%s [%s%s] %s%% -- Done!\n" % (prefix, "#" * complete, "." * (width - complete), percentage))
 	else:
-		sys.stdout.write("\r%s [%s%s] %s%%" % (prefix, "#" * complete, "." * (width-complete), percentage))
+		sys.stdout.write("\r%s [%s%s] %s%%" % (prefix, "#" * complete, "." * (width - complete), percentage))
 	sys.stdout.flush()
 
 
@@ -238,7 +236,7 @@ def plot_populate(dictionary, tuple_list):
 	return dictionary
 
 
-def missing_data_ploter(infile, excluded_missing, excluded_gaps,sequence_length):
+def missing_data_ploter(infile, excluded_missing, excluded_gaps):
 	# Preparing dataset
 	position = [x[0] for x in excluded_missing]
 	missing_list = [x[1] for x in excluded_missing]
@@ -284,7 +282,7 @@ def main():
 					filter_sequences, excluded_missing, excluded_gaps, sequence_length, total_missing, total_gap = \
 						file_filter(sub_storage, arg.missing, arg.gap, missing, gap, multi="yes", extremities_2="no")
 				logger(subpart, excluded_missing, excluded_gaps, missing, gap)
-				missing_data_ploter(subpart, total_missing, total_gap, sequence_length)
+				missing_data_ploter(subpart, total_missing, total_gap)
 				for header, sequence in filter_sequences.items():
 					master_storage[header] += sequence
 			dump_fasta(master_storage, taxa_order, infile)
@@ -297,7 +295,7 @@ def main():
 				gaps_number += len(excluded_gaps)
 				logger(infile, excluded_missing, excluded_gaps, missing, gap)
 				dump_fasta(filter_sequences, taxa_order, infile)
-				missing_data_ploter(infile, total_missing, total_gap, sequence_length)
+				missing_data_ploter(infile, total_missing, total_gap)
 			elif len(input_file_list) > 1:
 				loading(input_file_list.index(infile) + 1, len(input_file_list), "Processing alignments (%s)" %
 						infile, 50)
@@ -308,7 +306,7 @@ def main():
 				logger(infile, excluded_missing, excluded_gaps, missing, gap)
 				dump_fasta(filter_sequences, taxa_order, infile)
 				if arg.plot is not None:
-					missing_data_ploter(infile, total_missing, total_gap, sequence_length)
+					missing_data_ploter(infile, total_missing, total_gap)
 	master_log(infile, missing_data_number, gaps_number, missing, gap)
 	
 main()
