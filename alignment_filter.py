@@ -47,19 +47,22 @@ parser.add_argument("-plot", dest="plot", action="store_const", const="True", he
 
 arg = parser.parse_args()
 
-def loading (current_state,size,prefix,width):
+
+def loading(current_state, size, prefix, width):
 	""" Function that prints the loading progress of the script """
-	percentage = int(((current_state+1)/size)*100)
-	complete = int(width*percentage*0.01)
+	percentage = int(((current_state + 1) / size) * 100)
+	complete = int(width * percentage * 0.01)
 	if percentage == 100:
-		sys.stdout.write("\r%s [%s%s] %s%% -- Done!\n" % (prefix,"#"*complete,"."*(width-complete),percentage))
+		sys.stdout.write("\r%s [%s%s] %s%% -- Done!\n" % (prefix, "#" * complete, "." * (width - complete), percentage))
 	else:
-		sys.stdout.write("\r%s [%s%s] %s%%" % (prefix,"#"*complete,"."*(width-complete),percentage))
+		sys.stdout.write("\r%s [%s%s] %s%%" % (prefix, "#" * complete, "." * (width-complete), percentage))
 	sys.stdout.flush()
 
+
 def dataset_creator(infile_list):
-	""" Deals with input files. Creates one instance in case there is only one input alignment, or another instance in case there are multiple input files"""
-	main_instance = ep.SeqUtils ()
+	""" Deals with input files. Creates one instance in case there is only one input alignment, or another instance
+	in case there are multiple input files"""
+	main_instance = ep.SeqUtils()
 	if len(infile_list) == 1:
 		input_alignment = "".join(infile_list)
 		alignment_storage = main_instance.read_alignment(input_alignment, "fasta")
