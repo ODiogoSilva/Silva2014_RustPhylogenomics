@@ -28,18 +28,22 @@ import pickle
 import ElParsito3 as ep
 import time
 import matplotlib.pyplot as plt
-from pympler.asizeof import asizeof
 
 parser = argparse.ArgumentParser(description="Filters alignment files")
 
-parser.add_argument("-in",dest="infile",nargs="+",required=True,help="Provide the input file name. If multiple files are provided, plase separated the names with spaces")
-parser.add_argument("-if",dest="InputFormat",default="fasta",choices=["fasta","nexus","phylip"],help="Format of the input file(s) (default is '%(default)s')")
-parser.add_argument("-g",dest="gap",default="-",help="Symbol for gap (default is '%(default)s')")
-parser.add_argument("-m",dest="missing",default="X",help="Symbol for missing data (default is '%(default)s')")
-parser.add_argument("-tg",dest="threshold_gap",nargs=1,help="Threshold for the maximum proportion of gaps allowed in each column")
-parser.add_argument("-tm",dest="threshold_missing",nargs=1,help="Threshold for the maximum proportion of missind data allowed in each column")
-parser.add_argument("-o",dest="outfile",help="Name of the output file")
-parser.add_argument("-plot",dest="plot",action="store_const",const="True",help="Create a plot of the missing and gap data for the alignment")
+parser.add_argument("-in", dest="infile", nargs="+", required=True, help="Provide the input file name. If multiple "
+					"files are provided, please separated the names with spaces")
+parser.add_argument("-if", dest="InputFormat", default="fasta", choices=["fasta", "nexus", "phylip"], help="Format of "
+					"the input file(s) (default is '%(default)s')")
+parser.add_argument("-g", dest="gap", default="-", help="Symbol for gap (default is '%(default)s')")
+parser.add_argument("-m", dest="missing", default="X", help="Symbol for missing data (default is '%(default)s')")
+parser.add_argument("-tg", dest="threshold_gap", nargs=1, help="Threshold for the maximum proportion of gaps allowed "
+					"in each column")
+parser.add_argument("-tm", dest="threshold_missing", nargs=1, help="Threshold for the maximum proportion of missing "
+					"data allowed in each column")
+parser.add_argument("-o", dest="outfile", help="Name of the output file")
+parser.add_argument("-plot", dest="plot", action="store_const", const="True", help="Create a plot of the missing and "
+					"gap data for the alignment")
 
 arg = parser.parse_args()
 
