@@ -64,6 +64,12 @@ def loading(current_state, size, prefix, width, proteome):
 	sys.stdout.flush()
 
 
+def install_schema():
+	""" Install the schema for the mySQL database """
+	print("Installing mySQL schema")
+	subprocess.Popen(["orthomclInstallSchema " + config_file], shell=True).wait()
+
+
 def id_duplicate_check(proteome):
 	print("\t Checking duplicates for " + proteome)
 	previous_ids, duplicate_ids = [], {}
