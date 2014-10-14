@@ -48,7 +48,7 @@ evalue_cutoff = "0.00001"  # 1E-5 - Recommended
 CPUs = "15"  # Number of CPU's for multiprocessing
 
 # For mcl
-inflation = "1.5"
+inflation = ["1.5", "2", "3", "4", "5"]
 
 # For mcl_groups
 prefix = "Basidiomycota"  # Arbitrary string for the name of the groups
@@ -219,13 +219,15 @@ def dump_pairs():
 
 def mcl():
 	print("Running mcl algorithm")
-	subprocess.Popen(["mcl mclInput --abc -I " + inflation + " -o mclOutput"], shell=True).wait()
+	for val in inflation:
+		subprocess.Popen(["mcl mclInput --abc -I " + val + " -o mclOutput_" + val.replace(".", "")], shell=True).wait()
 
 
 def mcl_groups(prefix, start_id, groups_file):
 	print("Dumping groups")
-	subprocess.Popen(["orthomclMclToGroups " + prefix + " " + start_id + " < mclOutput > " + groups_file],
-					shell=True).wait()
+	for val in inflation:
+		subprocess.Popen(["orthomclMclToGroups " + prefix + " " + start_id + " < mclOutput_" + val.replace(".", "") +
+						  " > " + groups_file], shell=True).wait()
 
 
 if arg.adjust:
