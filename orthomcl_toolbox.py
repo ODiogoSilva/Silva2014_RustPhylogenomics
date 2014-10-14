@@ -165,6 +165,8 @@ Ascomycota_list = ['Naful', 'Fuoxy', 'Catro', 'Asfum', 'Migyp', 'Poans', 'Ascla'
 				   'Cagui', 'Scscl', 'Pabra', 'Wiano', 'Magri', 'Gagra', 'Fuver', 'Cogra', 'Trrub', 'Crpar', 'Vedah',
 				   'Coimm', 'Asacu', 'Trree', 'Nehae', 'Acalc', 'Scoct', 'Cacas', 'Phnod', 'Patan', 'Myfij']
 
+Colletotrichum_list = ["cofio", "coglo", "cogra", "cohig", "coorb"]
+
 ####### #######
 #
 #	FUNCTIONS
@@ -216,8 +218,10 @@ def frequency_filter(species_frequency_dic, gene_threshold, sp_threshold, taxa_s
 	else:
 		focal_species = species_frequency_dic.keys()
 
+	# First flag if the absolute length of the focal species is higher than the specified threshold
 	if len(focal_species) <= int(sp_threshold):
 		sp_frequency_flag += 1
+
 	for species, frequency in species_frequency_dic.items():
 		if taxa_strict is None and species in taxa_subset:
 			return 0, sp_frequency_flag
@@ -279,7 +283,7 @@ def csv_basic_stats(outfile, csv_template):
 	try:
 		outfile_handle = open("".join(outfile), "w")
 	except TypeError:
-		print("Output file name is invalid. Exiting.")
+		print("Output file name is invalid. Please provide a valid one using the -o option. Exiting.")
 		raise SystemExit
 
 	outfile_handle.write("file;# Clusters;# Sequences; # Clusters (single copy); # Clusters (single copy/ minimum "
