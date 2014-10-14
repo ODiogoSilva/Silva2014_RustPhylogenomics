@@ -234,6 +234,7 @@ if arg.adjust:
 	adjust_fasta(arg.infile)
 	
 elif arg.no_adjust:
+	install_schema()
 	filter_fasta()
 	make_blastdb("goodProteins.fasta")
 	allvsall_blast("goodProteins.fasta")
@@ -247,6 +248,7 @@ elif arg.no_adjust:
 elif arg.check:
 	check_fasta(arg.infile)
 elif arg.normal:
+	install_schema()
 	adjust_fasta(arg.infile)
 	filter_fasta()
 	make_blastdb("goodProteins.fasta")
