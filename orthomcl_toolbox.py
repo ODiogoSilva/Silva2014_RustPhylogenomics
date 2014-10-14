@@ -274,9 +274,14 @@ def cluster_manipulation(ortho_dic, gene_threshold, sp_threshold, taxa_subset=No
 	return num_clusters, num_sequences, below_gene_threshold, gene_species_threshold, filtered_groups, filtered_order
 
 
-def csv_basicStats(outfile, csv_template):
+def csv_basic_stats(outfile, csv_template):
 	""" This function grabs a number os statistics (stored in a dictionary variable) to be written on a csv file """
-	outfile_handle = open("".join(outfile), "w")
+	try:
+		outfile_handle = open("".join(outfile), "w")
+	except TypeError:
+		print("Output file name is invalid. Exiting.")
+		raise SystemExit
+
 	outfile_handle.write("file;# Clusters;# Sequences; # Clusters (single copy); # Clusters (single copy/ minimum "
 						 "Basidio sp)\n")
 	for infile, stats in csv_template.items():
@@ -487,7 +492,7 @@ def stats_per_sp(sp_list, ortho_dic, outfile):
 if arg.stat is not None:
 	if arg.stat == "1a":
 		csv_template = main_multi_ortho(arg.infile)
-		csv_basicStats(arg.outfile, csv_template)
+		csv_basic_stats(arg.outfile, csv_template)
 	elif arg.stat == "1b":
 		filtered_groups, ortho_order = main_filter_groups(arg.infile, arg.threshold[0], arg.threshold[1],
 														 arg.taxa_subset, arg.taxa_strict)
